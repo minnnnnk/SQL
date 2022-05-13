@@ -54,7 +54,7 @@ or first_name like '%s%';
 --문제 8 얜 아직 안됨
 select *
 from departments
-order by department_name desc;
+order by length(department_name) desc;
 
 --문제 9
 SELECT  country_id  
