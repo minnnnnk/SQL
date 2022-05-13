@@ -11,5 +11,11 @@ order by department_name asc
          ,em.employee_id desc;
 
 --문제 2
-select *
-from employees;
+select  job_id
+        ,employee_id
+        ,first_name
+        ,salary
+        ,de.department_name
+        ,jo.job_title
+        ,em.employee_id
+from employees em , departments de , jobs jo;
