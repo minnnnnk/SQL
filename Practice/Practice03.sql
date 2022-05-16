@@ -74,7 +74,7 @@ select  em.employee_id 사번
         ,ma.first_name 매니저이름
         ,ma.hire_date 매니저입사일
 from employees em , employees ma
-where em.employee_id = ma.employee_id
+where em.manager_id = ma.employee_id
 ;
 
 --문제 6
