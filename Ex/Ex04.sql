@@ -112,3 +112,47 @@ select
 from employees
 where salary < all(select avg(salary)
                     from employees);
+                    
+                    select *
+from employees;
+
+select *
+from emp_details_view;
+
+select  first_name
+        ,salary
+from employees
+where salary >= (select salary
+                 from employees
+                 where first_name = 'Den');
+
+select salary
+from employees
+where first_name = 'Den';
+
+select salary
+from employees
+where department_id = 110;      
+
+select  department_id
+        ,first_name
+        ,salary
+from employees
+where salary in (select salary
+                 from employees
+                 where department_id = 10);        
+                 
+select first_name, salary, employee_id
+from employees
+where salary in (select min(salary)
+                from employees);             
+                
+select  first_name
+        ,salary
+        ,department_id
+from employees
+where (department_id, salary) in (select    department_id
+                                            ,max(salary)
+                                  from employees
+                                  group by department_id);
+ 
