@@ -177,19 +177,20 @@ from employees
 group by department_id;
 
 
-
-
---그 부서중에서 제일 높은 평균연봉부서
 select  avg(salary)
-        ,department_id
+        ,r.region_name
+from employees e, regions r
+group by r.region_name;
+--그 부서중에서 제일 높은 평균연봉부서
+select  department_id
 from employees
+group by department_id
 having avg(salary) in (select max(salary)
                  from (select  avg(salary) salary
                               ,department_id
                        from employees
                        group by department_id)
-                       )
-group by department_id;
+                       );
 
 --그 부서 조회
 select  e.employee_id
@@ -218,3 +219,53 @@ and e.job_id = j.job_id;
 
 --문제8.
 --평균 급여(salary)가 가장 높은 부서는? 
+
+
+      
+select department_name
+from departments
+where department_id in (select  department_id
+                        from employees
+                        group by department_id
+                        having avg(salary) in (select max(salary)
+                                               from (select  avg(salary) salary
+                                                             ,department_id
+                                                     from employees
+                                                     group by department_id)
+                                               )      
+                         );
+                         
+--문제9.
+--평균 급여(salary)가 가장 높은 지역은
+
+select  avg(salary) salary
+        ,r.region_name
+from employees e, departments d, locations l, countries c, regions r
+where e.department_id =d.department_id
+and d.location_id = l.location_id
+and l.country_id = c.country_id
+and c.region_id = r.region_id
+group by r.region_name;
+
+select max(s.salary)
+from (select  avg(salary) salary
+              ,r.region_name
+      from employees e, departments d, locations l, countries c, regions r
+      where e.department_id =d.department_id
+      and d.location_id = l.location_id
+      and l.country_id = c.country_id
+      and c.region_id = r.region_id
+      group by r.region_name)s;
+
+select r.region_name
+from regions r , employees e
+group by r.region_name
+having avg(salary) in (select max(s.salary)
+from (select  avg(salary) salary
+              ,r.region_name
+      from employees e, departments d, locations l, countries c, regions r
+      where e.department_id =d.department_id
+      and d.location_id = l.location_id
+      and l.country_id = c.country_id
+      and c.region_id = r.region_id
+      group by r.region_name)s;);
