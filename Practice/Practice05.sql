@@ -238,6 +238,7 @@ where department_id in (select  department_id
 --문제9.
 --평균 급여(salary)가 가장 높은 지역은
 
+-- 평균 급여
 select  avg(salary) salary
         ,r.region_name
 from employees e, departments d, locations l, countries c, regions r
@@ -247,6 +248,7 @@ and l.country_id = c.country_id
 and c.region_id = r.region_id
 group by r.region_name;
 
+--가장 높은지역
 select max(s.salary)
 from (select  avg(salary) salary
               ,r.region_name
@@ -257,15 +259,65 @@ from (select  avg(salary) salary
       and c.region_id = r.region_id
       group by r.region_name)s;
 
+--을 출력
 select r.region_name
-from regions r , employees e
+from employees e, departments d, locations l, countries c, regions r
+where e.department_id =d.department_id
+and d.location_id = l.location_id
+and l.country_id = c.country_id
+and c.region_id = r.region_id
 group by r.region_name
 having avg(salary) in (select max(s.salary)
-from (select  avg(salary) salary
-              ,r.region_name
-      from employees e, departments d, locations l, countries c, regions r
-      where e.department_id =d.department_id
-      and d.location_id = l.location_id
-      and l.country_id = c.country_id
-      and c.region_id = r.region_id
-      group by r.region_name)s;);
+                       from (select  avg(salary) salary
+                                     ,r.region_id
+                             from employees e, departments d, locations l, countries c, regions r
+                             where e.department_id =d.department_id
+                             and d.location_id = l.location_id
+                             and l.country_id = c.country_id
+                             and c.region_id = r.region_id
+                             group by r.region_id)s)
+;
+
+      
+/*문제9. 평균 급여(salary)가 가장 높은 지역은?*/
+select  region_name
+from    regions r,
+        (
+        select	region_id, salary
+        from	(
+        		select	region_id, avg(salary) salary
+				from	(
+						select	r.region_id, region_name, salary
+						from	employees e, departments d, locations l, countries c, regions r
+						where	e.department_id = d.department_id
+						and		d.location_id = l.location_id
+						and		l.country_id = c.country_id
+						and		c.region_id = r.region_id
+						)
+				group by region_id
+				)
+		) s
+where	r.region_id = s.region_id
+and		salary in	(
+					select	max(salary)
+					from	(
+							select	region_id, avg(salary) salary
+							from	(
+									select	r.region_id, salary
+									from	employees e, departments d, locations l, countries c, regions r
+									where	e.department_id = d.department_id
+									and		d.location_id = l.location_id
+									and		l.country_id = c.country_id
+									and		c.region_id = r.region_id
+									)
+							group by region_id
+							)
+                	);
+
+
+/*문제10. 평균 급여(salary)가 가장 높은 업무는?*/
+select  job_title
+from    jobs j,
+        (select job_id, avg(salary) salary from employees group by job_id) s
+where s.job_id = j.job_id
+and   salary = (select max(salary) from (select avg(salary) salary from employees group by job_id));
