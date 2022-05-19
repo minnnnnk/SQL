@@ -177,10 +177,7 @@ from employees
 group by department_id;
 
 
-select  avg(salary)
-        ,r.region_name
-from employees e, regions r
-group by r.region_name;
+
 --그 부서중에서 제일 높은 평균연봉부서
 select  department_id
 from employees
